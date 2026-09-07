@@ -45,6 +45,11 @@ export interface LegalDocument {
   sections: LegalSection[];
 }
 
+export interface AppIcon {
+  src: string;
+  alt: string;
+}
+
 export interface App {
   slug: string;
   categorySlug: string;
@@ -52,6 +57,7 @@ export interface App {
   tagline: string;
   status: AppStatus;
   platforms: Platform[];
+  icon?: AppIcon;
   /** ~150-160 chars. Doubles as the page's meta description. */
   summary: string;
   loop: LoopStep[];
@@ -70,6 +76,8 @@ export interface App {
   privacyPolicy?: LegalDocument;
   /** Rendered at /apps/[category]/[app]/terms when present. */
   termsOfService?: LegalDocument;
+  /** Rendered at /apps/[category]/[app]/delete-account when present. */
+  accountDeletion?: LegalDocument;
 }
 
 export interface Category {

@@ -53,6 +53,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.3,
       });
     }
+    if (app.accountDeletion) {
+      routes.push({
+        url: `${base}/delete-account`,
+        lastModified: new Date(app.accountDeletion.updatedAt),
+        changeFrequency: "yearly",
+        priority: 0.3,
+      });
+    }
     return routes;
   });
 

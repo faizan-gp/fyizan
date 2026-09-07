@@ -36,6 +36,7 @@ export function softwareApplicationJsonLd(app: App, category: Category): JsonLdO
       "@type": "Person",
       name: person.fullName,
     },
+    ...(app.icon ? { image: absoluteUrl(app.icon.src) } : {}),
     ...(app.pricing && app.pricing.length > 0
       ? {
           offers: app.pricing.map((tier) => ({

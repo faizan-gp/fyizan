@@ -19,6 +19,10 @@ export const hours: App = {
     "A pre-purchase regret calculator. Scan a price, see what it really costs you, decide with a clear head.",
   status: "in-development",
   platforms: ["ios", "android"],
+  icon: {
+    src: "/images/apps/hours/icon.png",
+    alt: "Life Hours app icon — a teal tally mark on black",
+  },
   summary:
     "Life Hours turns any price into hours of your own working life before you buy — then asks, 30 days later, whether it was worth it.",
   loop: [
@@ -125,7 +129,12 @@ export const hours: App = {
         "No, on principle. See the privacy section above — it's a hard rule for this app, not a policy that can quietly change.",
     },
   ],
-  screenshots: [],
+  screenshots: [
+    {
+      src: "/images/apps/hours/screenshot-plus.png",
+      alt: "Life Hours Plus screen showing Kept-if-grown, Insights, Goals, full history and a yearly/monthly/lifetime pricing picker",
+    },
+  ],
   waitlistEnabled: true,
   accentColor: "money",
   updatedAt: "2026-09-07",
@@ -233,6 +242,60 @@ export const hours: App = {
       {
         heading: "Contact",
         body: ["Questions about this policy: " + CONTACT_EMAIL + "."],
+      },
+    ],
+  },
+
+  accountDeletion: {
+    updatedAt: LEGAL_UPDATED,
+    intro: [
+      "Life Hours: Expense Tracker (\"Life Hours\"), built by Faizan Gillani, lets you delete your account and its data at any time. This page explains how, whether or not you have the App installed.",
+    ],
+    sections: [
+      {
+        heading: "How to delete your account (in the App)",
+        body: [
+          "1. Open Life Hours and go to Settings.",
+          "2. Tap Account, then Delete Account.",
+          "3. Confirm the deletion.",
+          "This immediately signs you out and permanently deletes your cloud account and everything synced to it — see \"What gets deleted\" below.",
+        ],
+      },
+      {
+        heading: "Delete your account without opening the App",
+        body: [
+          "Email " +
+            CONTACT_EMAIL +
+            " from the address on your account (or include the email/account identifier you signed up with) and ask for your account to be deleted.",
+          "Deletion requests submitted this way are completed within 30 days.",
+        ],
+      },
+      {
+        heading: "Just want to clear local data, no account needed?",
+        body: [
+          "If you never registered, go to Settings → Delete All Data in the App. This wipes your on-device ledger instantly and involves no account or cloud request at all, since the core loop works without an account.",
+        ],
+      },
+      {
+        heading: "What gets deleted",
+        body: [
+          "Your account email or Apple/Google account identifier.",
+          "Every item, price, photo, and category you've logged, along with your Buy/Skip/Wait decisions, 30-day follow-up answers, goals, and Regulars.",
+          "Your settings: currency, hours worked per week, preferred Kept-if-grown asset, and notification preferences.",
+          "Your income and fixed costs, if you ever enabled sync — these are stored encrypted and are deleted along with the rest of your cloud data.",
+          "All of the above is deleted from Life Hours' cloud infrastructure within 30 days of a confirmed request.",
+        ],
+      },
+      {
+        heading: "What isn't deleted, and why",
+        body: [
+          "Anonymous, event-level analytics and crash diagnostics recorded before deletion aren't linked to your account identifier and can't be traced back to you, so they aren't part of an account-deletion request.",
+          "Subscription and purchase records are retained by Apple or Google as required for billing, tax, and fraud-prevention purposes under their own policies — Life Hours never sees your payment details directly.",
+        ],
+      },
+      {
+        heading: "Contact",
+        body: ["Questions about account or data deletion: " + CONTACT_EMAIL + "."],
       },
     ],
   },

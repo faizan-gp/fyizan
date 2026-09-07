@@ -39,7 +39,7 @@ export default function HomePage() {
             <div>
               <BadgePill>Portfolio & App Studio</BadgePill>
               <h1 className="mt-8 font-display text-5xl sm:text-7xl font-black tracking-tight text-ink uppercase leading-none">
-                Hi, I'm Faizan.
+                Hi, I&apos;m Faizan.
               </h1>
               <p className="mt-6 text-xl text-ink-muted max-w-2xl leading-relaxed">
                 {person.oneLiner}
@@ -66,7 +66,17 @@ export default function HomePage() {
               <Link href={`/apps/${featuredApp.categorySlug}/${featuredApp.slug}`} className="flex flex-col h-full justify-between relative z-10">
                 <div>
                   <div className="flex items-center gap-3 text-accent mb-4">
-                    <Code2 size={24} />
+                    {featuredApp.icon ? (
+                      <Image
+                        src={featuredApp.icon.src}
+                        alt={featuredApp.icon.alt}
+                        width={28}
+                        height={28}
+                        className="rounded-lg"
+                      />
+                    ) : (
+                      <Code2 size={24} />
+                    )}
                     <span className="font-bold text-sm uppercase tracking-wider">Featured App</span>
                   </div>
                   <h2 className="font-display text-4xl font-black text-ink group-hover:text-accent-3 transition-colors">{featuredApp.name}</h2>
@@ -116,7 +126,7 @@ export default function HomePage() {
             transition={{ delay: 0.4 }}
             className="md:col-span-2 lg:col-span-6 bg-surface border border-border rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow"
           >
-            <h3 className="font-display text-2xl font-black text-ink mb-8">Where I've been</h3>
+            <h3 className="font-display text-2xl font-black text-ink mb-8">Where I&apos;ve been</h3>
             <ul className="space-y-6">
               {recentRoles.map((entry) => (
                 <li key={`${entry.company}-${entry.startDate}`} className="border-l-2 border-accent-soft pl-4 group hover:border-accent transition-colors">

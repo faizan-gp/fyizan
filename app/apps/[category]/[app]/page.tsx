@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -53,11 +54,22 @@ export default async function AppPage({ params }: { params: Params }) {
       <section className="grid-lines border-b border-border">
         <Container className="py-16 sm:py-24">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-5xl font-black uppercase tracking-tight text-ink sm:text-6xl">
-              {app.name}
-            </h1>
-            <StatusBadge status={app.status} />
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            {app.icon && (
+              <Image
+                src={app.icon.src}
+                alt={app.icon.alt}
+                width={72}
+                height={72}
+                className="rounded-2xl border border-border"
+              />
+            )}
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="font-display text-5xl font-black uppercase tracking-tight text-ink sm:text-6xl">
+                {app.name}
+              </h1>
+              <StatusBadge status={app.status} />
+            </div>
           </div>
           <p className="mt-4 max-w-2xl text-xl text-ink-muted">{app.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-4">
@@ -70,6 +82,37 @@ export default async function AppPage({ params }: { params: Params }) {
           </div>
         </Container>
       </section>
+
+      {app.screenshots && app.screenshots.length > 0 && (
+        <section className="border-b border-border">
+          <Container className="py-16">
+            <p className="text-xs font-bold uppercase tracking-wide text-accent">Early look</p>
+            <h2 className="mt-2 font-display text-3xl font-black text-ink">
+              What it looks like today
+            </h2>
+            <p className="mt-3 max-w-2xl text-ink-muted">
+              A real screen from the build in progress — not a mockup, and not final. Status,
+              pricing, and copy will keep changing before launch.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-6">
+              {app.screenshots.map((screenshot) => (
+                <div
+                  key={screenshot.src}
+                  className="w-64 overflow-hidden rounded-3xl border border-border bg-surface shadow-md"
+                >
+                  <Image
+                    src={screenshot.src}
+                    alt={screenshot.alt}
+                    width={640}
+                    height={1392}
+                    className="h-auto w-full"
+                  />
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
 
       <section className="border-b border-border">
         <Container className="py-16">
@@ -176,7 +219,7 @@ export default async function AppPage({ params }: { params: Params }) {
         </Container>
       </section>
 
-      {(app.privacyPolicy || app.termsOfService) && (
+      {(app.privacyPolicy || app.termsOfService || app.accountDeletion) && (
         <section>
           <Container className="py-10">
             <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Legal</p>
@@ -195,6 +238,14 @@ export default async function AppPage({ params }: { params: Params }) {
                   className="text-sm font-bold text-ink hover:text-accent"
                 >
                   Terms &amp; Conditions
+                </Link>
+              )}
+              {app.accountDeletion && (
+                <Link
+                  href={`/apps/${category.slug}/${app.slug}/delete-account`}
+                  className="text-sm font-bold text-ink hover:text-accent"
+                >
+                  Delete Account
                 </Link>
               )}
             </div>
