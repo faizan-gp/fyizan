@@ -1,9 +1,9 @@
+"use client";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-// The signature CTA: a rounded pill with a circular icon cap, lifted
-// directly from the agency-template reference. Primary = filled accent
-// with a white cap; secondary = white/outline with an accent cap.
 export function PillButton({
   href,
   children,
@@ -21,21 +21,28 @@ export function PillButton({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`group inline-flex items-center gap-4 rounded-full py-1.5 pl-6 pr-1.5 text-sm font-bold transition-transform hover:-translate-y-0.5 ${
-        isPrimary
-          ? "bg-accent text-white"
-          : "border border-border bg-surface text-ink"
-      }`}
+      passHref
+      legacyBehavior
     >
-      {children}
-      <span
-        aria-hidden
-        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm ${
-          isPrimary ? "bg-white text-accent" : "bg-accent text-white"
+      <motion.a
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className={`group relative inline-flex items-center gap-4 rounded-full py-1.5 pl-6 pr-1.5 text-sm font-bold transition-all shadow-md hover:shadow-xl ${
+          isPrimary
+            ? "bg-gradient-to-r from-accent to-accent-2 text-white border-none"
+            : "border-2 border-accent-2 bg-surface text-ink hover:bg-accent-soft"
         }`}
       >
-        →
-      </span>
+        {children}
+        <span
+          aria-hidden
+          className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm transition-transform group-hover:translate-x-1 ${
+            isPrimary ? "bg-white text-accent-2 shadow-sm" : "bg-gradient-to-r from-accent to-accent-2 text-white"
+          }`}
+        >
+          <ArrowRight size={16} strokeWidth={3} />
+        </span>
+      </motion.a>
     </Link>
   );
 }

@@ -1,8 +1,7 @@
+"use client";
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
 
-// A browser-chrome mockup card — used to preview a page or app without
-// needing a real screenshot on hand. Dots echo the reference's carousel
-// tab indicators.
 export function PreviewFrame({
   label,
   children,
@@ -13,16 +12,20 @@ export function PreviewFrame({
   className?: string;
 }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border border-border bg-surface shadow-sm ${className}`}>
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-        <span aria-hidden className="h-2 w-2 rounded-full bg-accent" />
-        <span aria-hidden className="h-2 w-2 rounded-full bg-ink/30" />
-        <span aria-hidden className="h-2 w-2 rounded-full bg-ink/15" />
+    <motion.div 
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      className={`group overflow-hidden rounded-2xl border border-accent-soft bg-surface shadow-md hover:shadow-2xl hover:border-accent-2 transition-all ${className}`}
+    >
+      <div className="flex items-center gap-2 border-b border-accent-soft bg-surface-hover px-4 py-3 group-hover:bg-accent-soft transition-colors">
+        <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent" />
+        <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent-2" />
+        <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent-3" />
         {label && (
-          <span className="ml-2 truncate text-xs text-ink-muted">{label}</span>
+          <span className="ml-2 font-mono truncate text-xs font-bold text-ink-muted group-hover:text-accent-2 transition-colors">{label}</span>
         )}
       </div>
       <div className="p-6">{children}</div>
-    </div>
+    </motion.div>
   );
 }
