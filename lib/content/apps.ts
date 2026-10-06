@@ -1,9 +1,10 @@
 import { hours } from "@/content/apps/hours";
+import { mediasort } from "@/content/apps/mediasort";
 import type { App } from "./types";
 
 // Add a new app by adding one entry here after creating its content file —
 // see architecture.md §4.1.
-const apps: App[] = [hours];
+const apps: App[] = [hours, mediasort];
 
 export function getAllApps(): App[] {
   return apps;

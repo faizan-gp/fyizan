@@ -45,6 +45,15 @@ export interface LegalDocument {
   sections: LegalSection[];
 }
 
+export interface AppSupport {
+  intro: string[];
+  contactEmail: string;
+  /** What to include in a support email, e.g. device model and OS version. */
+  includeInEmail?: string;
+  /** Help topics, rendered as an FAQ on the support page. */
+  topics: FaqItem[];
+}
+
 export interface AppIcon {
   src: string;
   alt: string;
@@ -78,6 +87,8 @@ export interface App {
   termsOfService?: LegalDocument;
   /** Rendered at /apps/[category]/[app]/delete-account when present. */
   accountDeletion?: LegalDocument;
+  /** Rendered at /apps/[category]/[app]/support when present. */
+  support?: AppSupport;
 }
 
 export interface Category {

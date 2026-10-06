@@ -1,9 +1,8 @@
 // Single source of truth for the site's own URL. Every canonical link, every
 // JSON-LD `url` field, and the sitemap all read from this — see
-// architecture.md §9. Replace the placeholder once a domain is chosen
-// (requirements.md §14.1).
+// architecture.md §9. Production domain is fyizan.com; override via NEXT_PUBLIC_SITE_URL.
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://faizangillani.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fyizan.com";
 
 export const SITE_NAME = "Faizan Gillani";
 

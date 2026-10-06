@@ -233,7 +233,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 A single `lib/site.ts` holds the one value everything else derives from:
 
 ```ts
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://faizangillani.com' // placeholder — see requirements.md §14
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://fyizan.com'
 ```
 
 `metadataBase` in the root layout, every canonical URL, every JSON-LD `url` field, and the sitemap all read from `SITE_URL`. Changing the eventual real domain is a one-line, one-file change.

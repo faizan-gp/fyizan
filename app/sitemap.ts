@@ -53,6 +53,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.3,
       });
     }
+    if (app.support) {
+      routes.push({
+        url: `${base}/support`,
+        lastModified: new Date(app.updatedAt),
+        changeFrequency: "yearly",
+        priority: 0.3,
+      });
+    }
     if (app.accountDeletion) {
       routes.push({
         url: `${base}/delete-account`,

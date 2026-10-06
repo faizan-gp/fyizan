@@ -219,10 +219,10 @@ export default async function AppPage({ params }: { params: Params }) {
         </Container>
       </section>
 
-      {(app.privacyPolicy || app.termsOfService || app.accountDeletion) && (
+      {(app.privacyPolicy || app.termsOfService || app.accountDeletion || app.support) && (
         <section>
           <Container className="py-10">
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Legal</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Legal &amp; support</p>
             <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
               {app.privacyPolicy && (
                 <Link
@@ -238,6 +238,14 @@ export default async function AppPage({ params }: { params: Params }) {
                   className="text-sm font-bold text-ink hover:text-accent"
                 >
                   Terms &amp; Conditions
+                </Link>
+              )}
+              {app.support && (
+                <Link
+                  href={`/apps/${category.slug}/${app.slug}/support`}
+                  className="text-sm font-bold text-ink hover:text-accent"
+                >
+                  Support
                 </Link>
               )}
               {app.accountDeletion && (

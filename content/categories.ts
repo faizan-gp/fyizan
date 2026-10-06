@@ -12,4 +12,11 @@ export const categories: Category[] = [
       "Apps that turn a price into something you can actually feel before you pay it — built for the moment right before a purchase, and the moment right after.",
     accentColor: "money",
   },
+  {
+    slug: "utilities",
+    name: "Phone Utilities",
+    description:
+      "Small, focused tools that take care of the everyday housekeeping on your phone — working entirely on-device, with no account required.",
+    accentColor: "utility",
+  },
 ];

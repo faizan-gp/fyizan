@@ -13,6 +13,7 @@
   --border: #e5e7eb;
 
   --accent-money: #10b981;
+  --accent-utility: #d9603f;
 }
 
 @theme inline {
@@ -27,6 +28,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-border: var(--border);
   --color-accent-money: var(--accent-money);
+  --color-accent-utility: var(--accent-utility);
 
   --font-display: var(--font-archivo);
   --font-body: var(--font-jakarta);
