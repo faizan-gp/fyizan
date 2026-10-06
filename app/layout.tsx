@@ -1,43 +1,70 @@
-import type { Metadata } from "next";
-import { Archivo, Plus_Jakarta_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import {
+  Bricolage_Grotesque,
+  DM_Sans,
+  Figtree,
+  JetBrains_Mono,
+  Manrope,
+  Outfit,
+  Plus_Jakarta_Sans,
+  Sora,
+  Unbounded,
+} from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { StyleSwitcher } from "@/components/style-switcher";
 import { JsonLd } from "@/components/json-ld";
-import { personJsonLd } from "@/lib/seo/jsonld";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
-import { person } from "@/content/person";
+import { websiteJsonLd } from "@/lib/seo/jsonld";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+import { STYLE_BOOT_SCRIPT } from "@/lib/styles";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["700", "800", "900"],
-});
+// Each visual style pairs a display face with a body face. Aurora (the
+// default) preloads its fonts; the others load on first use.
+const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" });
+const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], display: "swap" });
+const sora = Sora({ variable: "--font-sora", subsets: ["latin"], display: "swap", preload: false });
+const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap", preload: false });
+const unbounded = Unbounded({ variable: "--font-unbounded", subsets: ["latin"], display: "swap", preload: false });
+const dmSans = DM_Sans({ variable: "--font-dmsans", subsets: ["latin"], display: "swap", preload: false });
+const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"], display: "swap", preload: false });
+const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"], display: "swap", preload: false });
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+const fontVariables = [bricolage, jakarta, jetbrains, sora, manrope, unbounded, dmSans, outfit, figtree]
+  .map((font) => font.variable)
+  .join(" ");
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     template: `%s · ${SITE_NAME}`,
-    default: `${SITE_NAME} — Full-Stack Engineer & Indie Maker`,
+    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
   },
-  description: person.oneLiner,
+  description: SITE_DESCRIPTION,
+};
+
+export const viewport: Viewport = {
+  themeColor: "#5B3CF5",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} ${jakarta.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-bg font-body text-ink">
-        <JsonLd data={personJsonLd()} />
+    // data-style is set by the boot script before first paint, so the server
+    // value ("aurora") is allowed to differ from the DOM at hydration.
+    <html lang="en" data-style="aurora" data-scroll-behavior="smooth" className={fontVariables} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: STYLE_BOOT_SCRIPT }} />
+      </head>
+      <body>
+        <a className="skip" href="#main">
+          Skip to content
+        </a>
+        <JsonLd data={websiteJsonLd()} />
         <Nav />
-        <main className="flex-1">{children}</main>
+        <main id="main">{children}</main>
         <Footer />
+        <StyleSwitcher />
       </body>
     </html>
   );

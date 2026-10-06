@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { Container } from "@/components/container";
 import { AppCard } from "@/components/app-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
@@ -31,31 +30,32 @@ export default async function CategoryPage({ params }: { params: Params }) {
   if (!category) notFound();
 
   const apps = getAppsByCategory(category.slug);
+  const crumbs = [
+    { name: "Apps", path: "/apps" },
+    { name: category.name, path: `/apps/${category.slug}` },
+  ];
 
   return (
-    <Container className="py-16 sm:py-24">
-      <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Apps", path: "/apps" },
-          { name: category.name, path: `/apps/${category.slug}` },
-        ])}
-      />
-      <Breadcrumbs
-        items={[
-          { name: "Apps", path: "/apps" },
-          { name: category.name, path: `/apps/${category.slug}` },
-        ]}
-      />
-      <h1 className="mt-4 font-display text-4xl font-black text-ink sm:text-5xl">
-        {category.name}
-      </h1>
-      <p className="mt-4 max-w-2xl text-lg text-ink-muted">{category.description}</p>
-
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {apps.map((app) => (
-          <AppCard key={app.slug} app={app} />
-        ))}
-      </div>
-    </Container>
+    <div className="view">
+      <JsonLd data={breadcrumbJsonLd(crumbs)} />
+      <section className="hero" style={{ paddingBottom: 40 }}>
+        <div className="wrap">
+          <Breadcrumbs items={crumbs} />
+          <h1 style={{ fontSize: "calc(clamp(2.2rem, 4.8vw, 3.6rem) * var(--ds))", marginBlock: "22px 16px" }}>
+            {category.name}
+          </h1>
+          <p className="lede">{category.description}</p>
+        </div>
+      </section>
+      <section className="section" style={{ paddingTop: 8 }}>
+        <div className="wrap">
+          <div className="app-grid">
+            {apps.map((app) => (
+              <AppCard key={app.slug} app={app} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

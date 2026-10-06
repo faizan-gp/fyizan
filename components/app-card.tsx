@@ -1,36 +1,54 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { App } from "@/lib/content/types";
-import { StatusBadge } from "./status-badge";
+import { appAccentStyle } from "@/lib/content/labels";
+import { getCategory } from "@/lib/content/categories";
+import { Icon } from "./icons";
+import { StatusPill } from "./status-pill";
 
 export function AppCard({ app }: { app: App }) {
+  const category = getCategory(app.categorySlug);
+  const name = app.shortName ?? app.name;
+  const peek = app.screenshots?.[0];
   return (
     <Link
       href={`/apps/${app.categorySlug}/${app.slug}`}
-      className="group block rounded-2xl border border-border bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-lg"
+      className="card app-card"
+      style={appAccentStyle(app.accentColor)}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="top">
+        <div className="row">
           {app.icon && (
-            <Image
-              src={app.icon.src}
-              alt={app.icon.alt}
-              width={40}
-              height={40}
-              className="rounded-xl border border-border"
-            />
+            <Image className="icon" src={app.icon.src} alt={app.icon.alt} width={56} height={56} />
           )}
-          <h3 className="font-display text-xl font-black text-ink">{app.name}</h3>
+          <StatusPill status={app.status} />
         </div>
-        <StatusBadge status={app.status} />
+        {peek && (
+          <Image
+            className="peek"
+            src={peek.src}
+            alt={peek.alt}
+            width={480}
+            height={1040}
+            sizes="(max-width: 680px) 60vw, 240px"
+          />
+        )}
       </div>
-      <p className="mt-3 text-sm text-ink-muted">{app.tagline}</p>
-      <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-accent">
-        View app
-        <span aria-hidden className="transition-transform group-hover:translate-x-1">
-          →
+      <div className="body">
+        <span className="tag">{category?.name}</span>
+        <h3>{name}</h3>
+        <p className="muted">{app.summary}</p>
+        <div className="meta">
+          {app.highlights.map((item) => (
+            <span key={item} className="pill">
+              {item}
+            </span>
+          ))}
+        </div>
+        <span className="link-more">
+          View app <Icon name="arrow" />
         </span>
-      </span>
+      </div>
     </Link>
   );
 }

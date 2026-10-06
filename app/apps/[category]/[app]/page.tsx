@@ -1,16 +1,17 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/container";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { StatusBadge } from "@/components/status-badge";
-import { PillButton } from "@/components/pill-button";
+import { AppCard } from "@/components/app-card";
+import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
-import { getAllApps, getApp } from "@/lib/content/apps";
+import { StatusPill } from "@/components/status-pill";
+import { WaitlistForm } from "@/components/waitlist-form";
+import { getAllApps, getApp, getWaitlistTargets } from "@/lib/content/apps";
 import { getCategory } from "@/lib/content/categories";
+import { PLATFORM_LABEL, appAccentStyle, platformList } from "@/lib/content/labels";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, softwareApplicationJsonLd } from "@/lib/seo/jsonld";
-import { person } from "@/content/person";
 
 export function generateStaticParams() {
   return getAllApps().map((app) => ({ category: app.categorySlug, app: app.slug }));
@@ -35,157 +36,173 @@ export default async function AppPage({ params }: { params: Params }) {
   const category = getCategory(categorySlug);
   if (!app || !category) notFound();
 
-  const breadcrumbItems = [
+  const name = app.shortName ?? app.name;
+  const base = `/apps/${category.slug}/${app.slug}`;
+  const crumbs = [
     { name: "Apps", path: "/apps" },
     { name: category.name, path: `/apps/${category.slug}` },
-    { name: app.name, path: `/apps/${category.slug}/${app.slug}` },
+    { name, path: base },
   ];
-
-  const waitlistHref = `mailto:${person.email}?subject=${encodeURIComponent(
-    `Notify me when ${app.name} launches`
-  )}`;
+  const shots = app.screenshots ?? [];
+  const targets = getWaitlistTargets();
+  const others = getAllApps().filter((other) => other.slug !== app.slug);
+  const legalLinks = [
+    app.privacyPolicy && { href: `${base}/privacy`, label: "Privacy Policy" },
+    app.termsOfService && { href: `${base}/terms`, label: "Terms & Conditions" },
+    app.support && { href: `${base}/support`, label: "Support" },
+    app.accountDeletion && { href: `${base}/delete-account`, label: "Delete Account" },
+  ].filter((link): link is { href: string; label: string } => Boolean(link));
 
   return (
-    <>
-      <JsonLd data={breadcrumbJsonLd(breadcrumbItems)} />
+    <div className="view" style={appAccentStyle(app.accentColor)}>
+      <JsonLd data={breadcrumbJsonLd(crumbs)} />
       <JsonLd data={softwareApplicationJsonLd(app, category)} />
       <JsonLd data={faqJsonLd(app.faq)} />
 
-      <section className="grid-lines border-b border-border">
-        <Container className="py-16 sm:py-24">
-          <Breadcrumbs items={breadcrumbItems} />
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            {app.icon && (
-              <Image
-                src={app.icon.src}
-                alt={app.icon.alt}
-                width={72}
-                height={72}
-                className="rounded-2xl border border-border"
-              />
-            )}
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="font-display text-5xl font-black uppercase tracking-tight text-ink sm:text-6xl">
-                {app.name}
-              </h1>
-              <StatusBadge status={app.status} />
+      <section className="d-hero">
+        <div className="wrap">
+          <Breadcrumbs items={crumbs} />
+          <div className="d-grid">
+            <div>
+              <div className="d-title">
+                {app.icon && <Image src={app.icon.src} alt={app.icon.alt} width={168} height={168} priority />}
+                <div>
+                  <h1>{name}</h1>
+                  <p className="d-sub">{app.subtitle ?? category.name}</p>
+                </div>
+              </div>
+              <h2 className="tagline">{app.tagline}</h2>
+              <div className="d-meta">
+                <StatusPill status={app.status} />
+                {app.platforms.map((platform) => (
+                  <span key={platform} className="pill plain">
+                    {PLATFORM_LABEL[platform]}
+                  </span>
+                ))}
+                {app.subtitle && <span className="pill plain">{category.name}</span>}
+              </div>
+              {app.waitlistEnabled && <WaitlistForm targets={targets} only={app.slug} surface />}
+            </div>
+
+            <div className="d-art">
+              <div className="blob" />
+              {shots.length === 1 && shots[0].kind === "phone" && (
+                <div className="phone">
+                  <Image src={shots[0].src} alt={shots[0].alt} width={1320} height={2868} sizes="300px" priority />
+                </div>
+              )}
+              {shots.length > 1 && (
+                <div className="pair">
+                  {shots.slice(0, 2).map((shot, index) => (
+                    <div key={shot.src} className={`shot p${index + 1}`}>
+                      <Image src={shot.src} alt={shot.alt} width={1179} height={2556} sizes="(max-width: 960px) 45vw, 270px" priority />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-          <p className="mt-4 max-w-2xl text-xl text-ink-muted">{app.tagline}</p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            {app.waitlistEnabled && (
-              <PillButton href={waitlistHref}>Get notified at launch</PillButton>
-            )}
-            <PillButton href={`/apps/${category.slug}`} variant="secondary">
-              More in {category.name}
-            </PillButton>
-          </div>
-        </Container>
+        </div>
       </section>
 
-      {app.screenshots && app.screenshots.length > 0 && (
-        <section className="border-b border-border">
-          <Container className="py-16">
-            <p className="text-xs font-bold uppercase tracking-wide text-accent">Early look</p>
-            <h2 className="mt-2 font-display text-3xl font-black text-ink">
-              What it looks like today
-            </h2>
-            <p className="mt-3 max-w-2xl text-ink-muted">
-              A real screen from the build in progress — not a mockup, and not final. Status,
-              pricing, and copy will keep changing before launch.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-6">
-              {app.screenshots.map((screenshot) => (
-                <div
-                  key={screenshot.src}
-                  className="w-64 overflow-hidden rounded-3xl border border-border bg-surface shadow-md"
-                >
-                  <Image
-                    src={screenshot.src}
-                    alt={screenshot.alt}
-                    width={640}
-                    height={1392}
-                    className="h-auto w-full"
-                  />
-                </div>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
-
-      <section className="border-b border-border">
-        <Container className="py-16">
-          <p className="text-xs font-bold uppercase tracking-wide text-accent">The loop</p>
-          <h2 className="mt-2 font-display text-3xl font-black text-ink">How it works</h2>
-          <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {app.loop.map((step, index) => (
-              <li key={step.title} className="rounded-2xl border border-border bg-surface p-6">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft font-display text-sm font-black text-accent">
-                  {index + 1}
-                </span>
-                <p className="mt-4 font-display text-lg font-black text-ink">{step.title}</p>
-                <p className="mt-2 text-sm text-ink-muted">{step.description}</p>
+      <section className="section">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">How it works</span>
+            <h2>{app.headlines.steps}</h2>
+          </div>
+          <ol className="steps" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            {app.loop.map((step) => (
+              <li key={step.title} className="card step">
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
               </li>
             ))}
           </ol>
-        </Container>
+        </div>
       </section>
 
-      <section className="border-b border-border">
-        <Container className="py-16">
-          <h2 className="font-display text-3xl font-black text-ink">Features</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="section">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">Features</span>
+            <h2>Everything {name} does.</h2>
+          </div>
+          <div className="features">
             {app.features.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-border bg-surface p-6">
-                <p className="font-display text-lg font-black text-ink">{feature.title}</p>
-                <p className="mt-2 text-sm text-ink-muted">{feature.description}</p>
+              <div key={feature.title} className="card feature">
+                <div className="chip-ic">
+                  <Icon name={feature.icon} />
+                </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
               </div>
             ))}
           </div>
-        </Container>
+        </div>
       </section>
 
-      <section className="border-b border-border">
-        <Container className="py-16">
-          <h2 className="font-display text-3xl font-black text-ink">Privacy, by construction</h2>
-          <ul className="mt-6 max-w-2xl space-y-4">
-            {app.privacyHighlights.map((point) => (
-              <li key={point} className="flex items-start gap-3">
-                <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
-                  ✓
-                </span>
-                <span className="text-ink-muted">{point}</span>
-              </li>
-            ))}
-          </ul>
-        </Container>
+      {shots.length > 1 && (
+        <section className="section tight">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="eyebrow">Screens</span>
+              <h2>See it in action.</h2>
+            </div>
+            <div className="gallery">
+              {shots.map((shot) => (
+                <div key={shot.src} className="shot">
+                  <Image src={shot.src} alt={shot.alt} width={1179} height={2556} sizes="300px" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="section">
+        <div className="wrap">
+          <div className="card privacy">
+            <div>
+              <span className="eyebrow">Privacy</span>
+              <h2>Built so your data stays yours.</h2>
+            </div>
+            <ul>
+              {app.privacyHighlights.map((point) => (
+                <li key={point}>
+                  <span className="tick">
+                    <Icon name="check" />
+                  </span>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </section>
 
       {app.pricing && app.pricing.length > 0 && (
-        <section className="border-b border-border">
-          <Container className="py-16">
-            <h2 className="font-display text-3xl font-black text-ink">Pricing</h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+        <section className="section">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="eyebrow">Pricing</span>
+              <h2>{app.headlines.pricing}</h2>
+            </div>
+            <div className="tiers">
               {app.pricing.map((tier, index) => {
-                const highlighted = index === app.pricing!.length - 1 && app.pricing!.length > 1;
+                const highlighted = app.pricing!.length > 1 && index === app.pricing!.length - 1;
+                const badge = tier.badge ?? tier.price;
                 return (
-                  <div
-                    key={tier.tier}
-                    className={`rounded-2xl border p-6 ${
-                      highlighted ? "border-accent bg-accent-soft" : "border-border bg-surface"
-                    }`}
-                  >
-                    <div className="flex items-baseline justify-between">
-                      <p className="font-display text-xl font-black text-ink">{tier.tier}</p>
-                      {tier.price && (
-                        <p className="text-sm font-bold text-ink-muted">{tier.price}</p>
-                      )}
-                    </div>
-                    <ul className="mt-4 space-y-2">
+                  <div key={tier.tier} className={`card tier ${highlighted ? "hl" : ""}`.trim()}>
+                    <h3>
+                      {tier.tier}
+                      {badge && <span className="pill">{badge}</span>}
+                    </h3>
+                    <ul>
                       {tier.features.map((feature) => (
-                        <li key={feature} className="text-sm text-ink-muted">
-                          {feature}
+                        <li key={feature}>
+                          <Icon name="check" />
+                          <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -193,73 +210,73 @@ export default async function AppPage({ params }: { params: Params }) {
                 );
               })}
             </div>
-          </Container>
+          </div>
         </section>
       )}
 
-      <section className="border-b border-border">
-        <Container className="py-16">
-          <h2 className="font-display text-3xl font-black text-ink">FAQ</h2>
-          <div className="mt-8 max-w-2xl divide-y divide-border">
-            {app.faq.map((item) => (
-              <details key={item.question} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-ink marker:content-none">
-                  {item.question}
-                  <span
-                    aria-hidden
-                    className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm text-ink-muted">{item.answer}</p>
+      <section className="section">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">Questions</span>
+            <h2>Common questions.</h2>
+          </div>
+          <div className="faq">
+            {app.faq.map((item, index) => (
+              <details key={item.question} className="card" open={index === 0}>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
               </details>
             ))}
           </div>
-        </Container>
+        </div>
       </section>
 
-      {(app.privacyPolicy || app.termsOfService || app.accountDeletion || app.support) && (
-        <section>
-          <Container className="py-10">
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Legal &amp; support</p>
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-              {app.privacyPolicy && (
-                <Link
-                  href={`/apps/${category.slug}/${app.slug}/privacy`}
-                  className="text-sm font-bold text-ink hover:text-accent"
-                >
-                  Privacy Policy
-                </Link>
-              )}
-              {app.termsOfService && (
-                <Link
-                  href={`/apps/${category.slug}/${app.slug}/terms`}
-                  className="text-sm font-bold text-ink hover:text-accent"
-                >
-                  Terms &amp; Conditions
-                </Link>
-              )}
-              {app.support && (
-                <Link
-                  href={`/apps/${category.slug}/${app.slug}/support`}
-                  className="text-sm font-bold text-ink hover:text-accent"
-                >
-                  Support
-                </Link>
-              )}
-              {app.accountDeletion && (
-                <Link
-                  href={`/apps/${category.slug}/${app.slug}/delete-account`}
-                  className="text-sm font-bold text-ink hover:text-accent"
-                >
-                  Delete Account
-                </Link>
-              )}
+      {app.waitlistEnabled && (
+        <section className="section" id="waitlist">
+          <div className="wrap">
+            <div className="card cta">
+              <div>
+                <h2>Get {name} the day it ships.</h2>
+                <p>
+                  Leave your email and you&rsquo;ll hear once, when it&rsquo;s available on {platformList(app.platforms)}.
+                </p>
+              </div>
+              <WaitlistForm targets={targets} only={app.slug} />
             </div>
-          </Container>
+          </div>
         </section>
       )}
-    </>
+
+      {others.length > 0 && (
+        <section className="section tight">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="eyebrow">More apps</span>
+              <h2>Also in the lineup.</h2>
+            </div>
+            <div className="app-grid">
+              {others.map((other) => (
+                <AppCard key={other.slug} app={other} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {legalLinks.length > 0 && (
+        <section className="section tight">
+          <div className="wrap">
+            <span className="eyebrow">Legal &amp; support</span>
+            <div className="legal-links" style={{ marginTop: 14 }}>
+              {legalLinks.map((link) => (
+                <Link key={link.href} href={link.href}>
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
   );
 }

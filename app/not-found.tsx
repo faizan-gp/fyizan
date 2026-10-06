@@ -1,17 +1,19 @@
-import { Container } from "@/components/container";
-import { PillButton } from "@/components/pill-button";
+import { ButtonLink } from "@/components/button-link";
 
 export default function NotFound() {
   return (
-    <Container className="py-24 text-center">
-      <p className="font-display text-8xl font-black text-accent">404</p>
-      <h1 className="mt-2 font-display text-3xl font-black text-ink">Page not found</h1>
-      <p className="mt-4 text-lg text-ink-muted">
-        That page doesn&rsquo;t exist, or hasn&rsquo;t shipped yet.
-      </p>
-      <div className="mt-8 flex justify-center">
-        <PillButton href="/">Back home</PillButton>
+    <div className="wrap nf view">
+      <p className="code grad">404</p>
+      <h1>Page not found</h1>
+      <p className="lede">That page doesn&rsquo;t exist, or hasn&rsquo;t shipped yet.</p>
+      <div className="cta-row">
+        <ButtonLink href="/" arrow>
+          Back home
+        </ButtonLink>
+        <ButtonLink href="/apps" variant="ghost">
+          Browse apps
+        </ButtonLink>
       </div>
-    </Container>
+    </div>
   );
 }

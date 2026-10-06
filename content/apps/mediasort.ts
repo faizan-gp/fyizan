@@ -26,6 +26,14 @@ export const mediasort: App = {
   },
   summary:
     "MediaSort finds the photos, videos and voice notes taking up your storage, then lets you delete, protect or compress them — all on your device.",
+  highlights: ["Swipe cleanup", "Compress", "Protected items"],
+  spotlight: { title: "~18.6 GB", text: "freed from your 24 largest videos" },
+  pricingModel: "Free trial, then one-time purchase",
+  dataNote: "Photos and videos never leave your device.",
+  headlines: {
+    steps: "From a full phone to free space in four steps.",
+    pricing: "Try it free. Pay once if you keep it.",
+  },
   loop: [
     {
       title: "See what's heavy",
@@ -50,31 +58,37 @@ export const mediasort: App = {
   ],
   features: [
     {
+      icon: "gauge",
       title: "Storage dashboard",
       description:
         "See how much of your device is used and how it splits across videos, photos, screenshots and free space.",
     },
     {
+      icon: "sparkles",
       title: "Suggested cleanups",
       description:
         "Start with the most worthwhile job — like your largest videos — with the space it could free up shown up front.",
     },
     {
+      icon: "layers",
       title: "Swipe cleanup",
       description:
         "A card-by-card review: stage an item for deletion or keep it forever, with its size and date in view.",
     },
     {
+      icon: "compress",
       title: "Compress without deleting",
       description:
         "Shrink videos and photos into smaller copies. Replace the original, keep both, or discard the copy — only after you've compared them.",
     },
     {
+      icon: "shield",
       title: "Protected items",
       description:
         "Protect what matters and it stays out of every cleanup suggestion, so you can't delete it by accident while swiping.",
     },
     {
+      icon: "sliders",
       title: "Quality you control",
       description:
         "Balanced keeps videos at 1080p; Smallest drops to 720p. Switch between original and compressed before you choose.",
@@ -99,6 +113,7 @@ export const mediasort: App = {
     {
       tier: "Lifetime",
       price: "One-time purchase",
+      badge: "One-time purchase",
       features: [
         "Unlimited cleanups",
         "Unlimited compression",
@@ -143,14 +158,17 @@ export const mediasort: App = {
     {
       src: "/images/apps/mediasort/screenshot-dashboard.png",
       alt: "MediaSort dashboard showing 148.3 GB of 256 GB used, split across videos, photos and other, with a suggested cleanup of the 24 largest videos",
+      kind: "poster",
     },
     {
       src: "/images/apps/mediasort/screenshot-swipe.png",
       alt: "MediaSort swipe cleanup showing a 1.84 GB video card marked Trash, with Stage for deletion and Keep forever buttons",
+      kind: "poster",
     },
     {
       src: "/images/apps/mediasort/screenshot-compress.png",
       alt: "MediaSort Compress tab listing videos with the percentage each could shrink, and 11.4 GB that could be freed",
+      kind: "poster",
     },
   ],
   waitlistEnabled: true,

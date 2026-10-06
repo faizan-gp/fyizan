@@ -6,6 +6,11 @@ export const SITE_URL =
 
 export const SITE_NAME = "Faizan Gillani";
 
+export const SITE_TAGLINE = "Everyday apps for iOS and Android";
+
+export const SITE_DESCRIPTION =
+  "Focused daily-use apps for your money and your phone. No ads, no account to get started, and your data stays yours.";
+
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }

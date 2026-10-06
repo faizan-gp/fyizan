@@ -1,6 +1,5 @@
-import { person } from "@/content/person";
-import type { App, Category, Project, Publication } from "@/lib/content/types";
-import { SITE_URL, absoluteUrl } from "@/lib/site";
+import type { App, Category } from "@/lib/content/types";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 // Builder functions for JSON-LD, each fed by the same content record the
 // page renders from — so structured data can never drift out of sync with
@@ -9,16 +8,13 @@ import { SITE_URL, absoluteUrl } from "@/lib/site";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JsonLdObject = Record<string, any>;
 
-export function personJsonLd(): JsonLdObject {
+export function websiteJsonLd(): JsonLdObject {
   return {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: person.fullName,
-    alternateName: person.displayName,
+    "@type": "WebSite",
+    name: SITE_NAME,
     url: SITE_URL,
-    jobTitle: person.jobTitle,
-    email: `mailto:${person.email}`,
-    knowsAbout: person.skillGroups.flatMap((group) => group.skills),
+    description: SITE_DESCRIPTION,
   };
 }
 
@@ -34,7 +30,7 @@ export function softwareApplicationJsonLd(app: App, category: Category): JsonLdO
     operatingSystem: app.platforms.join(", "),
     creator: {
       "@type": "Person",
-      name: person.fullName,
+      name: SITE_NAME,
     },
     ...(app.icon ? { image: absoluteUrl(app.icon.src) } : {}),
     ...(app.pricing && app.pricing.length > 0
@@ -75,34 +71,5 @@ export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>): 
       name: item.name,
       item: absoluteUrl(item.path),
     })),
-  };
-}
-
-export function projectJsonLd(project: Project): JsonLdObject {
-  return {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: project.name,
-    description: project.summary,
-    creator: {
-      "@type": "Person",
-      name: person.fullName,
-    },
-    dateCreated: project.updatedAt,
-  };
-}
-
-export function scholarlyArticleJsonLd(publication: Publication): JsonLdObject {
-  return {
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    headline: publication.title,
-    author: publication.authors.map((name) => ({ "@type": "Person", name })),
-    isPartOf: {
-      "@type": "Periodical",
-      name: publication.venue,
-    },
-    creativeWorkStatus: publication.status,
-    datePublished: publication.year,
   };
 }

@@ -1,40 +1,51 @@
-import { Container } from "@/components/container";
-import { BadgePill } from "@/components/badge-pill";
-import { CategoryCard } from "@/components/category-card";
+import { AppCard } from "@/components/app-card";
+import { AppCatalog } from "@/components/app-catalog";
+import { WaitlistForm } from "@/components/waitlist-form";
+import { getAllApps, getWaitlistTargets } from "@/lib/content/apps";
 import { getAllCategories } from "@/lib/content/categories";
-import { getAppsByCategory } from "@/lib/content/apps";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildMetadata({
   title: "Apps",
   description:
-    "Independent apps built by Faizan Gillani, organized by category — privacy-first, ad-free, and useful offline.",
+    "Daily-use apps by Faizan Gillani for your money and your phone, organized by category. No ads, no account to start, and your data stays yours.",
   path: "/apps",
 });
 
 export default function AppsPage() {
   const categories = getAllCategories();
+  const items = getAllApps().map((app) => ({
+    key: app.slug,
+    categorySlug: app.categorySlug,
+    card: <AppCard app={app} />,
+  }));
 
   return (
-    <Container className="py-16 sm:py-24">
-      <BadgePill>The studio</BadgePill>
-      <h1 className="mt-4 font-display text-4xl font-black text-ink sm:text-5xl">Apps</h1>
-      <p className="mt-4 max-w-2xl text-lg text-ink-muted">
-        Side hustles with a common thread: privacy-first, ad-free, and built to work offline.
-        Organized by the kind of problem they solve.
-      </p>
+    <div className="view">
+      <section className="hero" style={{ paddingBottom: 40 }}>
+        <div className="wrap">
+          <span className="eyebrow">All apps</span>
+          <h1 style={{ fontSize: "calc(clamp(2.2rem, 4.8vw, 3.6rem) * var(--ds))", marginBlock: "14px 16px" }}>
+            Apps for the way you <span className="grad">actually live.</span>
+          </h1>
+          <p className="lede">
+            Browse by category. Every app is built to work on your device first, with a free way to try it.
+          </p>
+          <AppCatalog categories={categories.map(({ slug, name }) => ({ slug, name }))} items={items} />
+        </div>
+      </section>
 
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.slug}
-            category={category}
-            appCount={getAppsByCategory(category.slug).length}
-          />
-        ))}
-      </div>
-
-      <p className="mt-10 text-sm font-medium text-ink-muted">More categories, coming as they ship.</p>
-    </Container>
+      <section className="section" id="waitlist">
+        <div className="wrap">
+          <div className="card cta">
+            <div>
+              <h2>Be first when an app launches.</h2>
+              <p>Pick an app and leave your email. You&rsquo;ll hear once, when it&rsquo;s available.</p>
+            </div>
+            <WaitlistForm targets={getWaitlistTargets()} />
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

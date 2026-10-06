@@ -1,3 +1,5 @@
+> **Partly out of date.** This document was written when the site was a personal portfolio. The About, Experience, Projects, Research and Contact pages, the `person` content, and the Person JSON-LD have since been removed, and the site is now a showcase of apps only. The app, category, legal-page and SEO sections still apply. See `README.md` for the current structure.
+
 # SEO Strategy & Topical Map — Faizan Gillani Portfolio & App Studio
 
 Companion to `requirements.md` (product) and `architecture.md` (technical implementation). This document exists because the site's brief explicitly calls for semantic SEO and a topical map, not just page-level metadata — search visibility is treated here as an information-architecture problem, not a checklist added after the fact.

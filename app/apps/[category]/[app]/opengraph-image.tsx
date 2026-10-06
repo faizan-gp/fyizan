@@ -11,7 +11,7 @@ type Params = Promise<{ category: string; app: string }>;
 export default async function Image({ params }: { params: Params }) {
   const { category: categorySlug, app: appSlug } = await params;
   const app = getApp(categorySlug, appSlug);
-  const name = app?.name ?? "App";
+  const name = app?.shortName ?? app?.name ?? "App";
   const tagline = app?.tagline ?? "";
 
   let iconDataUrl: string | undefined;
@@ -34,8 +34,8 @@ export default async function Image({ params }: { params: Params }) {
           flexDirection: "column",
           justifyContent: "center",
           padding: "80px",
-          background: "#fafafa",
-          color: "#111827",
+          background: "linear-gradient(135deg, #F6F5FD 0%, #E7E2FF 55%, #D4F3FA 100%)",
+          color: "#15122E",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
@@ -45,19 +45,19 @@ export default async function Image({ params }: { params: Params }) {
           <div
             style={{
               fontSize: 24,
-              color: "#8b5cf6",
+              color: "#5B3CF5",
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: 3,
             }}
           >
-            Faizan Gillani · App
+            Faizan Gillani
           </div>
         </div>
-        <div style={{ fontSize: 100, fontWeight: 900, marginTop: 24, textTransform: "uppercase" }}>
+        <div style={{ fontSize: 100, fontWeight: 800, marginTop: 24, letterSpacing: -3 }}>
           {name}
         </div>
-        <div style={{ fontSize: 32, marginTop: 20, color: "#6b7280", maxWidth: 940 }}>{tagline}</div>
+        <div style={{ fontSize: 32, marginTop: 20, color: "#5A5778", maxWidth: 940 }}>{tagline}</div>
       </div>
     ),
     { ...size }

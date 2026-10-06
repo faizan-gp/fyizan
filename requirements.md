@@ -1,3 +1,5 @@
+> **Partly out of date.** This document was written when the site was a personal portfolio. The About, Experience, Projects, Research and Contact pages, the `person` content, and the Person JSON-LD have since been removed, and the site is now a showcase of apps only. The app, category, legal-page and SEO sections still apply. See `README.md` for the current structure.
+
 # Product Requirements — Faizan Gillani Portfolio & App Studio
 
 *A personal portfolio and the home for every independent app Faizan ships, organized by category, starting with Hours.*

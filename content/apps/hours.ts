@@ -15,6 +15,8 @@ export const hours: App = {
   slug: "hours",
   categorySlug: "money",
   name: "Life Hours: Expense Tracker",
+  shortName: "Life Hours",
+  subtitle: "Expense Tracker",
   tagline:
     "A pre-purchase regret calculator. Scan a price, see what it really costs you, decide with a clear head.",
   status: "in-development",
@@ -25,6 +27,14 @@ export const hours: App = {
   },
   summary:
     "Life Hours turns any price into hours of your own working life before you buy — then asks, 30 days later, whether it was worth it.",
+  highlights: ["Wait timers", "Kept total", "Insights"],
+  spotlight: { title: "11 hours.", text: "That's all of Tuesday." },
+  pricingModel: "Free, with optional Plus",
+  dataNote: "Income stays on your device. Sync is optional and encrypted.",
+  headlines: {
+    steps: "From price tag to a clear decision in four steps.",
+    pricing: "Free to use. Upgrade only if you want more.",
+  },
   loop: [
     {
       title: "Price it",
@@ -49,31 +59,37 @@ export const hours: App = {
   ],
   features: [
     {
+      icon: "coins",
       title: "Kept total",
       description:
         "Every Skip banks its amount into a running total — a visible scoreboard for money that stayed yours.",
     },
     {
+      icon: "trend",
       title: "Kept-if-grown",
       description:
         "See what your Kept total would be worth today had it gone into gold, a world index, bitcoin, or a plain deposit a year ago — strictly backward-looking, never a forecast.",
     },
     {
+      icon: "repeat",
       title: "Regulars",
       description:
         "Anything priced twice becomes a Regular, one tap away next time — the weekly coffee, the daily pack of cigarettes.",
     },
     {
+      icon: "timer",
       title: "Wait timers",
       description:
         "A cooling-off period of your choosing, with a reminder the moment it ends.",
     },
     {
+      icon: "chart",
       title: "Insights",
       description:
         "A personal regret score and category breakdowns, built around one question: does sleeping on it actually work — for you specifically?",
     },
     {
+      icon: "share",
       title: "Share cards",
       description:
         "Post what something costs in hours of a nurse's wage, a teacher's, or your own — never your income, by construction.",
@@ -98,6 +114,7 @@ export const hours: App = {
     },
     {
       tier: "Plus",
+      badge: "Optional",
       features: [
         "Regret score and full Insights",
         "Kept-if-grown against any asset",
@@ -133,6 +150,7 @@ export const hours: App = {
     {
       src: "/images/apps/hours/screenshot-plus.png",
       alt: "Life Hours Plus screen showing Kept-if-grown, Insights, Goals, full history and a yearly/monthly/lifetime pricing picker",
+      kind: "phone",
     },
   ],
   waitlistEnabled: true,

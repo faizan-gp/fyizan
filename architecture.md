@@ -1,3 +1,5 @@
+> **Partly out of date.** This document was written when the site was a personal portfolio. The About, Experience, Projects, Research and Contact pages, the `person` content, and the Person JSON-LD have since been removed, and the site is now a showcase of apps only. The app, category, legal-page and SEO sections still apply. See `README.md` for the current structure.
+
 # Architecture — Faizan Gillani Portfolio & App Studio
 
 Companion to `requirements.md` (product), `seo-strategy.md` (topical map and semantic SEO), and `design-system.md` (visual identity). Stack: **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS v4**, deployed on **Vercel**.

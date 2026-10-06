@@ -1,13 +1,6 @@
-import { notFound } from "next/navigation";
-import { Container } from "@/components/container";
-import { Breadcrumbs } from "@/components/breadcrumbs";
-import { BadgePill } from "@/components/badge-pill";
-import { LegalDocumentBody } from "@/components/legal-document";
-import { JsonLd } from "@/components/json-ld";
+import { LegalPage, resolveLegal } from "@/components/legal-page";
 import { getAllApps, getApp } from "@/lib/content/apps";
-import { getCategory } from "@/lib/content/categories";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
 
 export function generateStaticParams() {
   return getAllApps()
@@ -28,30 +21,17 @@ export async function generateMetadata({ params }: { params: Params }) {
   });
 }
 
-export default async function PrivacyPolicyPage({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
   const { category: categorySlug, app: appSlug } = await params;
-  const app = getApp(categorySlug, appSlug);
-  const category = getCategory(categorySlug);
-  if (!app || !category || !app.privacyPolicy) notFound();
-
-  const breadcrumbItems = [
-    { name: "Apps", path: "/apps" },
-    { name: category.name, path: `/apps/${category.slug}` },
-    { name: app.name, path: `/apps/${category.slug}/${app.slug}` },
-    { name: "Privacy Policy", path: `/apps/${category.slug}/${app.slug}/privacy` },
-  ];
-
+  const { app, category, document } = resolveLegal(categorySlug, appSlug, "privacyPolicy");
   return (
-    <Container className="py-16 sm:py-24">
-      <JsonLd data={breadcrumbJsonLd(breadcrumbItems)} />
-      <Breadcrumbs items={breadcrumbItems} />
-      <BadgePill>{app.name}</BadgePill>
-      <h1 className="mt-4 font-display text-4xl font-black text-ink sm:text-5xl">
-        Privacy Policy
-      </h1>
-      <div className="mt-10">
-        <LegalDocumentBody document={app.privacyPolicy} />
-      </div>
-    </Container>
+    <LegalPage
+      app={app}
+      categorySlug={categorySlug}
+      categoryName={category.name}
+      pageTitle="Privacy Policy"
+      slug="privacy"
+      document={document}
+    />
   );
 }

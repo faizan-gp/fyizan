@@ -1,172 +1,210 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/container";
-import { BadgePill } from "@/components/badge-pill";
-import { PillButton } from "@/components/pill-button";
-import { PreviewFrame } from "@/components/preview-frame";
-import { person } from "@/content/person";
-import { getAllApps } from "@/lib/content/apps";
-import { getAllProjects } from "@/lib/content/projects";
-import { experience } from "@/content/experience";
+import { ButtonLink } from "@/components/button-link";
+import { AppCard } from "@/components/app-card";
+import { Icon } from "@/components/icons";
+import { WaitlistForm } from "@/components/waitlist-form";
+import { getAllApps, getWaitlistTargets } from "@/lib/content/apps";
+import { getCategory } from "@/lib/content/categories";
+import { STATUS_LABEL, platformList } from "@/lib/content/labels";
+import type { IconName } from "@/lib/content/types";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { MotionDiv } from "@/components/motion";
-import { ArrowRight, Code2, Briefcase, Zap, Terminal } from "lucide-react";
+import { SITE_DESCRIPTION, SITE_TAGLINE } from "@/lib/site";
 
 export const metadata = buildMetadata({
-  title: `${person.displayName} — Full-Stack Engineer & Indie Maker`,
-  description: person.oneLiner,
+  title: `Faizan Gillani — ${SITE_TAGLINE}`,
+  description: SITE_DESCRIPTION,
   path: "/",
 });
 
+const PRINCIPLES: { icon: IconName; title: string; text: string }[] = [
+  { icon: "ban", title: "No ads, ever", text: "No ad SDKs. No selling or sharing of your personal data. It's a rule, not a setting." },
+  { icon: "lock", title: "Private by default", text: "Photos, videos and income stay on your device. Sync is opt-in and encrypted." },
+  { icon: "device", title: "Works without an account", text: "Start using any app right away. The core features run on your phone." },
+  { icon: "tag", title: "Fair pricing", text: "A useful free tier first. Paid upgrades are clearly optional, and MediaSort is not a subscription." },
+];
+
+const COUNT_WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
 export default function HomePage() {
   const apps = getAllApps();
-  const featuredApp = apps[0];
-  const projects = getAllProjects().slice(0, 3);
-  const recentRoles = experience.filter((entry) => entry.role).slice(0, 2);
+  const withShots = apps.filter((app) => app.screenshots?.length);
+  const posterApp = withShots.find((app) => app.screenshots![0].kind === "poster");
+  const phoneApp = withShots.find((app) => app.screenshots![0].kind === "phone");
+  const poster = posterApp?.screenshots![0];
+  const phone = phoneApp?.screenshots![0];
+  const targets = getWaitlistTargets();
 
   return (
-    <div className="py-12 sm:py-24 bg-bg min-h-screen">
-      <Container>
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-6 auto-rows-[minmax(200px,auto)]">
-          
-          {/* Hero Tile - Spans 12 columns on large screens */}
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="md:col-span-4 lg:col-span-12 bg-surface rounded-3xl p-8 sm:p-12 border border-border shadow-sm hover:shadow-lg transition-shadow flex flex-col justify-between"
-          >
-            <div>
-              <BadgePill>Portfolio & App Studio</BadgePill>
-              <h1 className="mt-8 font-display text-5xl sm:text-7xl font-black tracking-tight text-ink uppercase leading-none">
-                Hi, I&apos;m Faizan.
-              </h1>
-              <p className="mt-6 text-xl text-ink-muted max-w-2xl leading-relaxed">
-                {person.oneLiner}
-              </p>
+    <div className="view">
+      <section className="hero">
+        <div className="wrap hero-grid">
+          <div>
+            <span className="pill">
+              <Icon name="sparkles" /> Daily-use apps for iOS and Android
+            </span>
+            <h1>
+              Everyday apps, <span className="grad">built to be useful.</span>
+            </h1>
+            <p className="lede">
+              A small collection of focused apps for your money and your phone. No ads, no account to get started, and
+              your data stays yours.
+            </p>
+            <div className="cta-row">
+              <ButtonLink href="/apps" arrow>
+                Explore the apps
+              </ButtonLink>
+              <ButtonLink href="#waitlist" variant="ghost">
+                Join a waitlist
+              </ButtonLink>
             </div>
-            
-            <div className="mt-12 flex flex-wrap gap-4">
-              <PillButton href="/apps">Explore my work</PillButton>
-              <PillButton href="/contact" variant="secondary">Get in touch</PillButton>
+            <div className="hero-facts">
+              <span><Icon name="ban" /> No ads</span>
+              <span><Icon name="lock" /> Private by default</span>
+              <span><Icon name="device" /> iOS and Android</span>
             </div>
-          </MotionDiv>
+          </div>
 
-          {/* Featured App Tile - Spans 6 cols */}
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="md:col-span-2 lg:col-span-6 bg-accent-soft border border-accent/20 rounded-3xl p-8 hover:shadow-lg transition-all group overflow-hidden relative"
-          >
-            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Terminal size={120} className="text-accent" />
-            </div>
-            {featuredApp && (
-              <Link href={`/apps/${featuredApp.categorySlug}/${featuredApp.slug}`} className="flex flex-col h-full justify-between relative z-10">
-                <div>
-                  <div className="flex items-center gap-3 text-accent mb-4">
-                    {featuredApp.icon ? (
-                      <Image
-                        src={featuredApp.icon.src}
-                        alt={featuredApp.icon.alt}
-                        width={28}
-                        height={28}
-                        className="rounded-lg"
-                      />
-                    ) : (
-                      <Code2 size={24} />
-                    )}
-                    <span className="font-bold text-sm uppercase tracking-wider">Featured App</span>
-                  </div>
-                  <h2 className="font-display text-4xl font-black text-ink group-hover:text-accent-3 transition-colors">{featuredApp.name}</h2>
-                  <p className="mt-4 text-ink-muted text-lg max-w-md">{featuredApp.tagline}</p>
-                </div>
-                <div className="mt-8 flex items-center gap-2 text-accent-3 font-bold group-hover:translate-x-2 transition-transform w-fit">
-                  View Case Study <ArrowRight size={18} />
-                </div>
-              </Link>
-            )}
-          </MotionDiv>
-
-          {/* Projects Tile - Spans 6 cols */}
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="md:col-span-4 lg:col-span-6 bg-surface border border-border rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3 text-ink">
-                <Briefcase size={24} className="text-accent" />
-                <h3 className="font-display text-2xl font-black">Recent Logs</h3>
+          <div className="hero-art">
+            {poster && (
+              <div className="shot shot-a">
+                <Image src={poster.src} alt={poster.alt} width={1179} height={2556} sizes="(max-width: 960px) 45vw, 300px" priority />
               </div>
-              <Link href="/projects" className="text-sm font-bold text-accent hover:text-accent-3 transition-colors">View all</Link>
-            </div>
-            
-            <ul className="space-y-6">
-              {projects.map((project) => (
-                <li key={project.slug} className="group">
-                  <Link href={`/projects/${project.slug}`} className="block">
-                    <h4 className="font-bold text-lg text-ink group-hover:text-accent transition-colors flex justify-between items-center">
-                      {project.name}
-                      <ArrowRight size={16} className="opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-accent" />
-                    </h4>
-                    <p className="text-sm text-ink-muted mt-1">{project.summary}</p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </MotionDiv>
-
-          {/* Experience Tile - Spans 6 cols */}
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="md:col-span-2 lg:col-span-6 bg-surface border border-border rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow"
-          >
-            <h3 className="font-display text-2xl font-black text-ink mb-8">Where I&apos;ve been</h3>
-            <ul className="space-y-6">
-              {recentRoles.map((entry) => (
-                <li key={`${entry.company}-${entry.startDate}`} className="border-l-2 border-accent-soft pl-4 group hover:border-accent transition-colors">
-                  <p className="font-bold text-ink">{entry.role}</p>
-                  <div className="flex items-center gap-2 text-sm mt-1">
-                    <span className="text-ink-muted">{entry.company}</span>
-                    <span className="text-accent-2 text-xs font-mono bg-accent-soft px-2 py-0.5 rounded-full">{entry.displayDate}</span>
+            )}
+            {phone && (
+              <div className="phone phone-b">
+                <Image src={phone.src} alt={phone.alt} width={1320} height={2868} sizes="(max-width: 960px) 40vw, 260px" priority />
+              </div>
+            )}
+            {[phoneApp, posterApp].map((app, index) =>
+              app?.icon ? (
+                <div key={app.slug} className={`float f${index + 1}`}>
+                  <div className="dot">
+                    <Image src={app.icon.src} alt="" width={76} height={76} />
                   </div>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8">
-              <Link href="/experience" className="inline-flex items-center gap-2 text-sm font-bold text-accent hover:text-accent-3 transition-colors">
-                Full timeline <ArrowRight size={16} />
-              </Link>
-            </div>
-          </MotionDiv>
-
-          {/* Skills Tile - Spans 6 cols */}
-          <MotionDiv 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="md:col-span-2 lg:col-span-6 bg-surface border border-border rounded-3xl p-8 shadow-sm hover:shadow-lg transition-shadow flex flex-col justify-center"
-          >
-            <h3 className="font-display text-2xl font-black text-ink mb-6">Toolkit</h3>
-            <div className="flex flex-wrap gap-2">
-              {person.skillGroups.flatMap(g => g.skills).slice(0, 15).map(skill => (
-                <span key={skill} className="px-4 py-2 rounded-xl bg-surface-hover text-ink text-sm font-medium border border-border hover:border-accent transition-colors">
-                  {skill}
-                </span>
-              ))}
-              <span className="px-4 py-2 rounded-xl bg-accent-soft text-accent font-bold text-sm">
-                + more
-              </span>
-            </div>
-          </MotionDiv>
-
+                  <div>
+                    <b>{app.spotlight.title}</b>
+                    {app.spotlight.text}
+                  </div>
+                </div>
+              ) : null,
+            )}
+          </div>
         </div>
-      </Container>
+      </section>
+
+      <section className="section tight">
+        <div className="wrap">
+          <div className="principles">
+            {PRINCIPLES.map((item) => (
+              <div key={item.title} className="card principle">
+                <div className="chip-ic">
+                  <Icon name={item.icon} />
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="lineup">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">The lineup</span>
+            <h2>
+              {COUNT_WORDS[apps.length] ?? apps.length} {apps.length === 1 ? "app" : "apps"}, each doing one job well.
+            </h2>
+            <p className="lede">
+              Each app has its own page with screens, features, privacy details, pricing and answers to common questions.
+            </p>
+          </div>
+          <div className="app-grid">
+            {apps.map((app) => (
+              <AppCard key={app.slug} app={app} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="eyebrow">At a glance</span>
+            <h2>Compare the apps side by side.</h2>
+          </div>
+          <div className="card table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <span className="sr">Detail</span>
+                  </th>
+                  {apps.map((app) => (
+                    <th key={app.slug} scope="col">
+                      <Link className="th-app" href={`/apps/${app.categorySlug}/${app.slug}`}>
+                        {app.icon && <Image src={app.icon.src} alt="" width={56} height={56} />}
+                        {app.shortName ?? app.name}
+                      </Link>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Category</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>{getCategory(app.categorySlug)?.name}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th scope="row">Platforms</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>{platformList(app.platforms)}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th scope="row">Status</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>{STATUS_LABEL[app.status]}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th scope="row">Pricing</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>{app.pricingModel}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th scope="row">Your data</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>{app.dataNote}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <th scope="row">Ads</th>
+                  {apps.map((app) => (
+                    <td key={app.slug}>None</td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="waitlist">
+        <div className="wrap">
+          <div className="card cta">
+            <div>
+              <h2>Be first when an app launches.</h2>
+              <p>Pick an app and leave your email. You&rsquo;ll hear once, when it&rsquo;s available.</p>
+            </div>
+            <WaitlistForm targets={targets} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

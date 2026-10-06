@@ -10,18 +10,16 @@ export interface Crumb {
 // exactly. See seo-strategy.md §4.5.
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="text-sm font-medium text-ink-muted">
-      <ol className="flex flex-wrap items-center gap-2">
+    <nav aria-label="Breadcrumb" className="crumbs">
+      <ol>
         {items.map((item, index) => (
           <Fragment key={item.path}>
-            {index > 0 && <span aria-hidden className="text-border">/</span>}
+            {index > 0 && <li aria-hidden>/</li>}
             <li>
               {index === items.length - 1 ? (
-                <span className="text-ink">{item.name}</span>
+                <span aria-current="page">{item.name}</span>
               ) : (
-                <Link href={item.path} className="hover:text-accent">
-                  {item.name}
-                </Link>
+                <Link href={item.path}>{item.name}</Link>
               )}
             </li>
           </Fragment>
